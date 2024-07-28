@@ -13,19 +13,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -35,6 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { AlertDialogForStudentInfo } from "./student-info";
 
 const data = [
   {
@@ -94,7 +86,7 @@ export const columns = [
   },
 
   {
-    accessorKey: "name",
+    accessorKey: "firstName",
     header: ({ column }) => {
       return (
         <Button
@@ -106,25 +98,31 @@ export const columns = [
         </Button>
       );
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "year",
-    header: "Year",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("year")}</div>,
-  },
-  {
-    accessorKey: "department",
-    header: "Department",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("department")}</div>
+      <div className="capitalize">
+        {row.getValue("firstName") + " " + row.original.lastName}
+      </div>
     ),
+  },
+  {
+    accessorKey: "batch",
+    header: "Year",
+    cell: ({ row }) => (
+      <div className="capitalize">{2024 - row.getValue("batch") + 1}</div>
+    ),
+  },
+  {
+    accessorKey: "dept",
+    header: "Department",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("dept")}</div>,
   },
 
   {
-    accessorKey: "from",
+    accessorKey: "boarding",
     header: "From",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("from")}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("boarding")}</div>
+    ),
   },
 
   {
@@ -146,34 +144,13 @@ export const columns = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <AlertDialogForStudentInfo row={row} />;
     },
   },
 ];
 
-export function DataTable() {
+export function DataTable({ data }) {
+  console.log(data);
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -202,17 +179,17 @@ export function DataTable() {
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={table.getColumn("name")?.getFilterValue() ?? ""}
+          placeholder="Filter Firstname..."
+          value={table.getColumn("firstName")?.getFilterValue() ?? ""}
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("firstName")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
       </div>
       <div className="rounded-md border">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
