@@ -45,7 +45,12 @@ const Login = () => {
     }
   };
   return (
-    <div className="h-screen w-full grid place-items-center">
+    <div className="mt-64 w-full grid place-items-center">
+      <div>
+        <p className="text-5xl font-bold mb-10">
+          Admin login for Railway Concession
+        </p>
+      </div>
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
