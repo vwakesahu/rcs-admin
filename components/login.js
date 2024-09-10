@@ -24,7 +24,7 @@ const Login = () => {
   const login = async () => {
     try {
       const { data } = await axios.post(
-        "https://portal-backend-murex.vercel.app/api/v1/concession/admin/login",
+        "/api/concession/admin/login",
         {
           email,
           password,
@@ -43,6 +43,8 @@ const Login = () => {
       console.log(error.response.data.message);
     }
   };
+  if (user?.authenticated)
+    return null
   return (
     <div className="mt-64 w-full grid place-items-center">
       <div>

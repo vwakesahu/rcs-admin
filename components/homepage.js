@@ -13,7 +13,7 @@ const HomePage = () => {
       const {
         data: { data },
       } = await axios.get(
-        "https://portal-backend-murex.vercel.app/api/v1/concession/admin/all-form"
+        "/api/concession/admin/all-form"
       );
       function flattenNestedObjects(data) {
         return data.map((item) => {

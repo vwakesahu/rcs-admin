@@ -30,7 +30,7 @@ export function AlertDialogForStudentInfo({ row }) {
   } = row.original;
   const instance = axios.create({
     withCredentials: true,
-    baseURL: 'https://portal-backend-murex.vercel.app/api/v1/concession/admin'
+    baseURL: '/api/concession/admin'
   })
   console.log(row.original)
 
