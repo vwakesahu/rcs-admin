@@ -15,7 +15,6 @@ import { Label } from "@/components/ui/label";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/redux/slices/userSlice";
 
-//        "https://portal-backend-omega.vercel.app/api/v1/concession/admin/login",
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -25,7 +24,7 @@ const Login = () => {
   const login = async () => {
     try {
       const { data } = await axios.post(
-        "https://portal-backend-omega.vercel.app/api/v1/concession/admin/login",
+        "https://portal-backend-murex.vercel.app/api/v1/concession/admin/login",
         {
           email,
           password,
