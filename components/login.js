@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "@/redux/slices/userSlice";
 
+
 const Login = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -23,7 +24,7 @@ const Login = () => {
   const login = async () => {
     try {
       const { data } = await axios.post(
-        "https://portal-backend-omega.vercel.app/api/v1/concession/admin/login",
+        "/api/concession/admin/login",
         {
           email,
           password,
@@ -34,7 +35,7 @@ const Login = () => {
         email: "dummyemail@gmail.com",
         firstName: "some Name",
         lastName: "some Name",
-        token: "sdsdivcbbdhsbdcjsdvcjdvbsfav",
+        token: data.token
       };
       dispatch(setUser(userData));
       console.log(data);
@@ -42,8 +43,15 @@ const Login = () => {
       console.log(error.response.data.message);
     }
   };
+  if (user?.authenticated)
+    return null
   return (
-    <div className="h-screen w-full grid place-items-center">
+    <div className="mt-64 w-full grid place-items-center">
+      <div>
+        <p className="text-5xl font-bold mb-10">
+          Admin login for Railway Concession
+        </p>
+      </div>
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>

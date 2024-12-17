@@ -7,16 +7,18 @@ import { resetUser } from "@/redux/slices/userSlice";
 
 const HomePage = () => {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false)
   const fetchData = async () => {
     try {
       const {
         data: { data },
       } = await axios.get(
-        "https://portal-backend-omega.vercel.app/api/v1/concession/admin/all-form"
+        "/api/concession/admin/all-form"
       );
       function flattenNestedObjects(data) {
         return data.map((item) => {
-          const { student, ...rest } = item;
+          console.log(data)
+          const { _id, student, ...rest } = item;
           return { ...rest, ...student };
         });
       }
@@ -24,31 +26,33 @@ const HomePage = () => {
       console.log(d);
       setData(d);
     } catch (error) {
-      console.log(error);
+      if (error.response.status !== 404)
+        console.log(error);
     }
   };
 
   console.log(data);
   useEffect(() => {
     fetchData();
+    setLoading(true);
   }, []);
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(resetUser());
   };
-
-  return (
-    <div className="p-12">
-      <div className="w-full flex justify-end">
-        <Button onClick={handleLogout}>Logout</Button>
-      </div>
-      <div className="">
-        <div className="w-full max-w-7xl">
-          <DataTable data={data} />
+  if (loading)
+    return (
+      <div className="p-12">
+        <div className="w-full flex justify-end">
+          <Button onClick={handleLogout}>Logout</Button>
+        </div>
+        <div className="">
+          <div className="w-full max-w-7xl">
+            <DataTable data={data} />
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
 };
 
 export default HomePage;

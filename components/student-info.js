@@ -10,12 +10,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 import { MoreHorizontal, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function AlertDialogForStudentInfo({ row }) {
   const [Open, setOpen] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState(null);
   const {
+    form,
     firstName,
     lastName,
     email,
@@ -26,17 +29,50 @@ export function AlertDialogForStudentInfo({ row }) {
     status,
     feesReceipt,
   } = row.original;
+  const instance = axios.create({
+    withCredentials: true,
+    baseURL: '/api/concession/admin'
+  })
+  useEffect(() => {
+    const fetchFile = async () => {
+      try {
+        const response = await fetch(feesReceipt);
+        const arrayBuffer = await response.arrayBuffer();
+        const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setPdfUrl(url);
+      } catch (error) {
+        console.error('Error fetching file:', error);
+      }
+    };
 
-  const handleAccept = (e) => {
+    fetchFile();
+  }, [feesReceipt]);
+
+  const handleAccept = async (e) => {
     e.preventDefault();
-    console.log("Accepted");
-    setOpen(false);
+    try {
+      await instance.post(
+        `/approved-status/${form}/approved`,
+      ).then(() => {
+        setOpen(false);
+      })
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleReject = (e) => {
+  const handleReject = async (e) => {
     e.preventDefault();
-    console.log("Rejected");
-    setOpen(false);
+    try {
+      await instance.post(
+        `/approved-status/${form}/rejected`
+      ).then(() => {
+        setOpen(false);
+      })
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -85,7 +121,7 @@ export function AlertDialogForStudentInfo({ row }) {
           </div>
           <div>
             <strong>Fees Receipt:</strong>{" "}
-            <img src={feesReceipt} target="_blank" rel="noopener noreferrer" />
+            <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-500">Click to view</a>
           </div>
         </div>
         <AlertDialogFooter>
